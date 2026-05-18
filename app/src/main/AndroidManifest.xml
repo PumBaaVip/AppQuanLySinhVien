@@ -12,7 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QLSinhVien">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.DanhSachActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UpdateStudentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AddStudentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
