@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QLSinhVien">
         <activity
+            android:name=".activity.EditStudentActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ChiTietActivity"
             android:exported="false" />
         <activity

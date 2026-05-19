@@ -3,6 +3,9 @@ package com.example.qlsinhvien.activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.GridView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.qlsinhvien.R;
@@ -12,11 +15,14 @@ import com.example.qlsinhvien.model.Student;
 import java.util.ArrayList;
 
 public class DanhSachActivity extends AppCompatActivity {
-    // 1. Sử dụng private để đóng gói dữ liệu
     private GridView lvStudents;
-    private ArrayList<Student> studentList;
-    private StudentAdapter adapter;
+    private EditText edtSearch;
     private DatabaseHelper db;
+
+    // QUAN TRỌNG: 2 danh sách riêng biệt
+    private ArrayList<Student> allStudents; // Lưu trữ toàn bộ dữ liệu từ DB
+    private ArrayList<Student> displayList; // Chỉ chứa dữ liệu đang hiển thị/lọc
+    private StudentAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,46 +30,65 @@ public class DanhSachActivity extends AppCompatActivity {
         setContentView(R.layout.activity_danh_sach);
 
         initView();
-        setupAdapter();
-        setupListener();
+        setupSearch();
     }
 
     private void initView() {
         lvStudents = findViewById(R.id.lvStudents);
+        edtSearch = findViewById(R.id.edtSearch);
         db = new DatabaseHelper(this);
-        studentList = new ArrayList<>();
-    }
 
-    private void setupAdapter() {
-        adapter = new StudentAdapter(this, studentList);
+        allStudents = new ArrayList<>();
+        displayList = new ArrayList<>();
+
+        // Adapter TRỎ VÀO displayList
+        adapter = new StudentAdapter(this, displayList);
         lvStudents.setAdapter(adapter);
-    }
 
-    private void setupListener() {
-        // Xử lý sự kiện click: Chỉ truyền ID
         lvStudents.setOnItemClickListener((parent, view, position, id) -> {
-            Student selectedStudent = studentList.get(position);
-
+            Student selectedStudent = displayList.get(position);
             Intent intent = new Intent(DanhSachActivity.this, ChiTietActivity.class);
-            // TRUYỀN ID - Cách này đảm bảo không bị lỗi dữ liệu quá lớn
             intent.putExtra("STUDENT_ID", selectedStudent.getId());
             startActivity(intent);
         });
     }
 
+    private void setupSearch() {
+        edtSearch.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filter(s.toString());
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    private void filter(String text) {
+        displayList.clear(); // Xóa danh sách hiển thị
+        if (text.isEmpty()) {
+            displayList.addAll(allStudents); // Hiển thị lại tất cả
+        } else {
+            String query = text.toLowerCase().trim();
+            for (Student s : allStudents) {
+                if (s.getName().toLowerCase().contains(query) ||
+                        s.getStudentCode().toLowerCase().contains(query)) {
+                    displayList.add(s);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged(); // Cập nhật lại giao diện
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        // Load lại dữ liệu mỗi khi quay lại màn hình này (Ví dụ: sau khi xóa hoặc sửa xong)
         loadData();
     }
 
     private void loadData() {
-        studentList.clear();
+        allStudents.clear();
         Cursor cursor = db.getAllStudents();
-
         if (cursor != null) {
-            // Sử dụng getColumnIndex để lấy đúng cột, an toàn hơn dùng số thứ tự
             int idIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.STUDENT_ID);
             int nameIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.STUDENT_NAME);
             int codeIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.STUDENT_CODE);
@@ -72,7 +97,7 @@ public class DanhSachActivity extends AppCompatActivity {
             int imageIndex = cursor.getColumnIndexOrThrow(DatabaseHelper.STUDENT_IMAGE);
 
             while (cursor.moveToNext()) {
-                studentList.add(new Student(
+                allStudents.add(new Student(
                         cursor.getInt(idIndex),
                         cursor.getString(nameIndex),
                         cursor.getString(codeIndex),
@@ -83,7 +108,10 @@ public class DanhSachActivity extends AppCompatActivity {
             }
             cursor.close();
         }
-        // Cập nhật lại giao diện
+
+        // Cập nhật displayList giống allStudents và báo adapter
+        displayList.clear();
+        displayList.addAll(allStudents);
         adapter.notifyDataSetChanged();
     }
 }
