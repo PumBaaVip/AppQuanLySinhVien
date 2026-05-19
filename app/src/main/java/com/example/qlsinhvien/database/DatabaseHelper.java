@@ -5,10 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import com.example.qlsinhvien.model.Student;
 
-public class DatabaseHelper extends SQLiteOpenHelper
-{
-    // 1. ĐỔI DATABASE_VERSION THÀNH 2 ĐỂ HỆ THỐNG CẬP NHẬT THÊM CỘT ẢNH
+public class DatabaseHelper extends SQLiteOpenHelper {
+
     private static final String DATABASE_NAME = "StudentManager.db";
     private static final int DATABASE_VERSION = 4;
 
@@ -25,24 +25,19 @@ public class DatabaseHelper extends SQLiteOpenHelper
     public static final String STUDENT_CODE = "student_code";
     public static final String STUDENT_PHONE = "phone";
     public static final String STUDENT_EMAIL = "email";
-
-    // 2. KHAI BÁO TÊN CỘT ẢNH MỚI
     public static final String STUDENT_IMAGE = "image";
 
-    public DatabaseHelper(Context context)
-    {
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db)
-    {
+    public void onCreate(SQLiteDatabase db) {
         String createUsersTable = "CREATE TABLE " + TABLE_USERS + " ("
                 + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME + " TEXT UNIQUE, "
                 + PASSWORD + " TEXT)";
 
-        // 3. THÊM CỘT ẢNH (STUDENT_IMAGE BLOB) VÀO CÂU LỆNH TẠO BẢNG
         String createStudentsTable = "CREATE TABLE " + TABLE_STUDENTS + " ("
                 + STUDENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + STUDENT_NAME + " TEXT, "
@@ -54,96 +49,94 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL(createUsersTable);
         db.execSQL(createStudentsTable);
 
-        // THÊM TÀI KHOẢN MẶC ĐỊNH
-        db.execSQL("INSERT INTO " + TABLE_USERS +
-                " (username, password) VALUES ('admin', '123')");
+        // Thêm tài khoản mặc định
+        db.execSQL("INSERT INTO " + TABLE_USERS + " (username, password) VALUES ('admin', '123')");
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-    {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENTS);
         onCreate(db);
     }
 
-    // ĐĂNG KÝ
+    // --- ĐĂNG KÝ ---
     public boolean registerUser(String username, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(USERNAME, username);
         values.put(PASSWORD, password);
-
-        long result = db.insert(TABLE_USERS, null, values);
-        return result != -1;
+        return db.insert(TABLE_USERS, null, values) != -1;
     }
 
-    // ĐĂNG NHẬP
+    // --- ĐĂNG NHẬP ---
     public boolean loginUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery((
-                        "SELECT * FROM " + TABLE_USERS +
-                                " WHERE username=? AND password=?"),
-                new String[]{username, password}
-        );
+        // Kiểm tra đúng username và password
+        Cursor cursor = db.query(TABLE_USERS, null, USERNAME + "=? AND " + PASSWORD + "=?",
+                new String[]{username, password}, null, null, null);
 
-        boolean exists = cursor.getCount() > 0;
-        cursor.close();
+        boolean exists = (cursor != null && cursor.getCount() > 0);
+        if (cursor != null) cursor.close();
         return exists;
     }
 
-    // 4. SỬA HÀM THÊM SINH VIÊN: Nhận thêm tham số `byte[] image`
+    // --- HÀM THÊM SINH VIÊN ---
     public boolean addStudent(String name, String code, String phone, String email, byte[] image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
         values.put(STUDENT_NAME, name);
         values.put(STUDENT_CODE, code);
         values.put(STUDENT_PHONE, phone);
         values.put(STUDENT_EMAIL, email);
-        values.put(STUDENT_IMAGE, image); // Đẩy mảng byte ảnh vào database
-
-        long result = db.insert(TABLE_STUDENTS, null, values);
-        return result != -1;
+        values.put(STUDENT_IMAGE, image);
+        return db.insert(TABLE_STUDENTS, null, values) != -1;
     }
 
-    // LẤY DANH SÁCH SINH VIÊN
+    // --- LẤY DANH SÁCH ---
     public Cursor getAllStudents() {
+        return getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_STUDENTS, null);
+    }
+
+    // --- LẤY SINH VIÊN THEO ID (AN TOÀN HƠN) ---
+    public Student getStudentById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery(
-                "SELECT * FROM " + TABLE_STUDENTS,
-                null
-        );
+        Cursor cursor = db.query(TABLE_STUDENTS, null, STUDENT_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null);
+
+        Student student = null;
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                // Dùng getColumnIndexOrThrow để tránh lỗi sai vị trí cột
+                student = new Student(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(STUDENT_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(STUDENT_NAME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(STUDENT_CODE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(STUDENT_PHONE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(STUDENT_EMAIL)),
+                        cursor.getBlob(cursor.getColumnIndexOrThrow(STUDENT_IMAGE))
+                );
+            }
+            cursor.close();
+        }
+        return student;
     }
 
-    // XÓA SINH VIÊN
-    public boolean deleteStudent(int id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(
-                TABLE_STUDENTS,
-                STUDENT_ID + "=?",
-                new String[]{String.valueOf(id)}
-        );
-        return result > 0;
-    }
-
-    // 5. SỬA HÀM UPDATE SINH VIÊN: Nhận thêm tham số `byte[] image` để sau này bạn sửa ảnh được luôn
+    // --- CẬP NHẬT ---
     public boolean updateStudent(int id, String name, String code, String phone, String email, byte[] image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
         values.put(STUDENT_NAME, name);
         values.put(STUDENT_CODE, code);
         values.put(STUDENT_PHONE, phone);
         values.put(STUDENT_EMAIL, email);
-        values.put(STUDENT_IMAGE, image); // Cập nhật lại mảng byte ảnh mới
+        if (image != null && image.length > 0) values.put(STUDENT_IMAGE, image);
 
-        int result = db.update(
-                TABLE_STUDENTS,
-                values,
-                STUDENT_ID + "=?",
-                new String[]{String.valueOf(id)}
-        );
-        return result > 0;
+        return db.update(TABLE_STUDENTS, values, STUDENT_ID + "=?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+    // --- XÓA ---
+    public boolean deleteStudent(int id) {
+        return getWritableDatabase().delete(TABLE_STUDENTS, STUDENT_ID + "=?", new String[]{String.valueOf(id)}) > 0;
     }
 }

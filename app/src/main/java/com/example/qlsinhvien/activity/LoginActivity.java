@@ -16,11 +16,11 @@ import com.example.qlsinhvien.R;
 import com.example.qlsinhvien.database.DatabaseHelper;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText edtUsername, edtPassword;
-    Button btnLogin;
-    TextView txtRegister;
-
-    DatabaseHelper databaseHelper;
+    // Sử dụng private để đóng gói dữ liệu
+    private EditText edtUsername, edtPassword;
+    private Button btnLogin;
+    private TextView txtRegister;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,61 +28,69 @@ public class LoginActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
+        initView();
+        setupListeners();
+
+        databaseHelper = new DatabaseHelper(this);
+    }
+
+    private void initView() {
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtRegister = findViewById(R.id.txtRegister);
+    }
 
-        databaseHelper = new DatabaseHelper(this);
+    private void setupListeners() {
+        // Nút đăng nhập
+        btnLogin.setOnClickListener(v -> performLogin());
 
-        // 1. Sự kiện khi click vào nút Đăng nhập bằng tay
-        btnLogin.setOnClickListener(v -> {
-            performLogin();
-        });
-
-        // 2. XỬ LÝ Ô USERNAME: Bấm Enter là nhảy xuống ô Mật khẩu để nhập tiếp
+        // Nhảy từ User sang Pass
         edtUsername.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_NEXT ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-
-                edtPassword.requestFocus(); // Lệnh ép con trỏ chuột nhảy sang ô Password
+            if (isAction(actionId, event)) {
+                edtPassword.requestFocus();
                 return true;
             }
             return false;
         });
 
-        // 3. XỬ LÝ Ô MẬT KHẨU: Bấm Enter là tự động gọi lệnh Đăng nhập
+        // Đăng nhập khi ấn Done ở ô Pass
         edtPassword.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                    (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN)) {
-
+            if (isAction(actionId, event)) {
                 performLogin();
                 return true;
             }
             return false;
         });
 
-        // 4. Sự kiện chuyển sang màn hình Đăng ký
-        txtRegister.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-        });
+        // Chuyển sang màn hình Đăng ký
+        txtRegister.setOnClickListener(v ->
+                startActivity(new Intent(this, RegisterActivity.class))
+        );
     }
 
-    // Hàm thực hiện logic đăng nhập
+    // Hàm tiện ích để kiểm tra hành động phím Enter
+    private boolean isAction(int actionId, KeyEvent event) {
+        return actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE ||
+                (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN);
+    }
+
     private void performLogin() {
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
-        if(username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        boolean check = databaseHelper.loginUser(username, password);
-
-        if(check) {
+        if (databaseHelper.loginUser(username, password)) {
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MainActivity.class));
+
+            // CHUẨN: Xóa ngăn xếp Activity để người dùng không quay lại màn hình Login được
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
