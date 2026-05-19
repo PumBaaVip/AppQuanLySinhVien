@@ -19,46 +19,70 @@
             android:textStyle="bold"
             android:textColor="#000000"
             android:layout_gravity="center"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="25dp"/>
 
-        <!-- TÊN -->
+        <!-- KHU VỰC ẢNH ĐẠI DIỆN (Người dùng click thẳng vào ảnh để chọn file) -->
+        <ImageView
+            android:id="@+id/imgProfile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="centerCrop"
+            android:background="@android:drawable/dialog_holo_light_frame"
+            android:padding="5dp"
+            android:layout_marginBottom="25dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <!-- TÊN (Nhấn Enter nhảy xuống ô MSSV) -->
         <EditText
             android:id="@+id/edtName"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:hint="Nhập tên sinh viên"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:imeOptions="actionNext"
             android:padding="15dp"
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="15dp"/>
 
-        <!-- MSSV -->
+        <!-- MSSV (Nhấn Enter nhảy xuống ô Số điện thoại) -->
         <EditText
             android:id="@+id/edtCode"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:hint="Nhập MSSV"
+            android:inputType="text"
+            android:maxLines="1"
+            android:imeOptions="actionNext"
             android:padding="15dp"
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="15dp"/>
 
-        <!-- SDT -->
+        <!-- SDT (Nhấn Enter nhảy xuống ô Email) -->
         <EditText
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:hint="Nhập số điện thoại"
             android:inputType="phone"
+            android:maxLines="1"
+            android:imeOptions="actionNext"
             android:padding="15dp"
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="15dp"/>
 
-        <!-- EMAIL -->
+        <!-- EMAIL (Ô cuối cùng: Nhấn Enter sẽ ẩn bàn phím) -->
         <EditText
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:hint="Nhập email"
             android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:imeOptions="actionDone"
             android:padding="15dp"
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="25dp"/>

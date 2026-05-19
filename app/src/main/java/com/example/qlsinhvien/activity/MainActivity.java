@@ -30,13 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
                     startActivity(intent);
                 });
-        btnDanhSachSinhVien.setOnClickListener(v -> {
 
-                Intent intent2 =
-                        new Intent(MainActivity.this, DanhSachActivity.class);
-
-                startActivity(intent2);
-
+        Button btnList = findViewById(R.id.btnListStudent); // ID nút của bạn
+        btnList.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, DanhSachActivity.class);
+            startActivity(intent);
         });
 
 

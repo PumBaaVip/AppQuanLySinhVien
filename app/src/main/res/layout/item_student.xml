@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:gravity="center"
+    android:layout_margin="4dp"
+    android:background="@android:drawable/dialog_holo_light_frame">
+    <!-- Dòng background trên giúp tạo viền trắng và đổ bóng nhẹ cho từng ô -->
+
+    <!-- Hình ảnh sinh viên -->
+    <ImageView
+        android:id="@+id/imgStudent"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"/>
+
+    <!-- Tên sinh viên bên dưới -->
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Tên Sinh Viên"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <!-- Mã số sinh viên -->
+    <TextView
+        android:id="@+id/txtCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="MSSV"
+        android:textSize="13sp"
+        android:textColor="#666666"
+        android:gravity="center"/>
+
+</LinearLayout>

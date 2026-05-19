@@ -98,6 +98,11 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         });
+
+        txtBackLogin.setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        });
     }
 
     @Override
@@ -109,4 +114,5 @@ public class RegisterActivity extends AppCompatActivity {
             return insets;
         });
     }
+
 }

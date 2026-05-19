@@ -3,36 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:padding="24dp"
     android:gravity="center">
 
+    <!-- LOGO -->
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginBottom="40dp"
+        android:scaleType="fitCenter"/>
+
+    <!-- USERNAME -->
     <EditText
         android:id="@+id/edtUsername"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Username"/>
+        android:layout_height="50dp"
+        android:hint="Username"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:nextFocusDown="@id/edtPassword"
+        android:imeOptions="actionNext"/>
 
+    <!-- PASSWORD -->
     <EditText
         android:id="@+id/edtPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
         android:hint="Password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:imeOptions="actionDone"/>
 
+    <!-- NÚT ĐĂNG NHẬP -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Đăng nhập"/>
+        android:layout_height="55dp"
+        android:layout_marginTop="30dp"
+        android:text="Đăng nhập"
+        android:textSize="16sp"/>
 
+    <!-- ĐĂNG KÝ -->
     <TextView
         android:id="@+id/txtRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="24dp"
         android:text="Chưa có tài khoản? Đăng ký"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:textColor="#333333"/>
 
 </LinearLayout>
