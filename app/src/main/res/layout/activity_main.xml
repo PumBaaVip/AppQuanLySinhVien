@@ -1,38 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:background="@drawable/ic_login"> <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6FFFFFF" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="QUẢN LÝ SINH VIÊN"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginBottom="30dp"/>
-
-    <Button
-        android:id="@+id/btnAddStudent"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Thêm sinh viên"
-        android:layout_marginBottom="15dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/btnListStudent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Danh sách sinh viên"
-        android:layout_marginBottom="15dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp">
 
-    <Button
-        android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Đăng xuất"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HỆ THỐNG"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#8B5E3C"
+                android:letterSpacing="0.1"/>
 
-</LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QUẢN LÝ SINH VIÊN"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+
+            <View
+                android:layout_width="60dp"
+                android:layout_height="4dp"
+                android:background="#8B5E3C"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#8B5E3C"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAddStudent"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_menu_item"
+                android:text="➕   Thêm sinh viên mới"
+                android:textAllCaps="false"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="24dp"
+                android:textColor="#8B5E3C"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnListStudent"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_menu_item"
+                android:text="📋   Danh sách sinh viên"
+                android:textAllCaps="false"
+                android:gravity="left|center_vertical"
+                android:paddingLeft="24dp"
+                android:textColor="#8B5E3C"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_logout_button"
+            android:text="Đăng xuất"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</RelativeLayout>

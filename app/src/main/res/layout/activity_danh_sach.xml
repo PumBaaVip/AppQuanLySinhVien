@@ -1,37 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:background="#F5F5F5">
+    android:background="@drawable/ic_login"> <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6FFFFFF" />
 
-    <!-- Thanh tìm kiếm (Giữ nguyên) -->
-    <EditText
-        android:id="@+id/edtSearch"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Nhập tên hoặc MSSV để tìm..."
-        android:background="@android:drawable/editbox_background"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:layout_marginBottom="12dp"
-        android:drawableLeft="@android:drawable/ic_menu_search"
-        android:drawablePadding="8dp"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true"/>
-
-    <!-- SỬA: Thay thế ListView bằng GridView -->
-    <GridView
-        android:id="@+id/lvStudents"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
-        android:columnWidth="160dp"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:stretchMode="columnWidth"
-        android:gravity="center" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DỮ LIỆU"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#8B5E3C"
+                android:letterSpacing="0.1"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DANH SÁCH SINH VIÊN"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edtSearch"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Tìm tên hoặc mã số sinh viên..."
+            android:background="@drawable/bg_menu_item" android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_marginBottom="20dp"
+            android:drawableLeft="@android:drawable/ic_menu_search"
+            android:drawablePadding="10dp"
+            android:textColor="#333333"
+            android:textColorHint="#A0A0A0"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"/>
+
+        <GridView
+            android:id="@+id/lvStudents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="auto_fit"
+            android:columnWidth="160dp"
+            android:horizontalSpacing="14dp"
+            android:verticalSpacing="14dp"
+            android:stretchMode="columnWidth"
+            android:scrollbarStyle="outsideOverlay"
+            android:gravity="center" />
+
+    </LinearLayout>
+</RelativeLayout>

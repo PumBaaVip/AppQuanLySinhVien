@@ -7,14 +7,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Patterns; // THÊM IMPORT NÀY ĐỂ CHECK EMAIL CHUẨN ANDROID
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView; // Thêm import này
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher; // Thêm import này
-import androidx.activity.result.contract.ActivityResultContracts; // Thêm import này
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qlsinhvien.R;
@@ -25,12 +26,10 @@ import java.io.InputStream;
 
 public class AddStudentActivity extends AppCompatActivity {
     EditText edtName, edtCode, edtPhone, edtEmail;
-    ImageView imgProfile; // 1. Khai báo ImageView ảnh đại diện
+    ImageView imgProfile;
     Button btnSave;
 
     DatabaseHelper databaseHelper;
-
-    // 2. Khai báo launcher để hứng kết quả chọn ảnh từ file máy tính/điện thoại
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     @Override
@@ -45,25 +44,20 @@ public class AddStudentActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edtPhone);
         edtEmail = findViewById(R.id.edtEmail);
         btnSave = findViewById(R.id.btnSave);
-
-        // 3. Ánh xạ ImageView từ file XML sang
         imgProfile = findViewById(R.id.imgProfile);
 
         // Database
         databaseHelper = new DatabaseHelper(this);
 
-        // 4. Đăng ký bộ lắng nghe sự kiện chọn ảnh (Phải viết trước khi click)
+        // Đăng ký bộ lắng nghe sự kiện chọn ảnh
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Uri imageUri = result.getData().getData(); // Đường dẫn tệp ảnh đã chọn
+                        Uri imageUri = result.getData().getData();
                         try {
-                            // Đọc file ảnh từ bộ nhớ/PC thành đối tượng InputStream
                             InputStream inputStream = getContentResolver().openInputStream(imageUri);
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                            // Hiển thị tấm ảnh vừa chọn lên ImageView trên giao diện
                             imgProfile.setImageBitmap(bitmap);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -73,10 +67,10 @@ public class AddStudentActivity extends AppCompatActivity {
                 }
         );
 
-        // 5. Cài đặt sự kiện: Click thẳng vào ảnh để chọn file ảnh trong máy
+        // Click thẳng vào ảnh để chọn file ảnh trong máy
         imgProfile.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*"); // Chỉ lọc hiển thị các file là hình ảnh
+            intent.setType("image/*");
             imagePickerLauncher.launch(Intent.createChooser(intent, "Chọn ảnh sinh viên"));
         });
 
@@ -88,19 +82,35 @@ public class AddStudentActivity extends AppCompatActivity {
             String phone = edtPhone.getText().toString().trim();
             String email = edtEmail.getText().toString().trim();
 
-            // Kiểm tra rỗng
-            if(name.isEmpty() || code.isEmpty() || phone.isEmpty() || email.isEmpty()) {
+            // 1. Kiểm tra rỗng toàn bộ form
+            if (name.isEmpty() || code.isEmpty() || phone.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 6. Chuyển đổi ảnh đang hiển thị trên ImageView thành mảng byte[] để lưu SQLite
+            // 2. PHẦN THÊM MỚI: Ràng buộc số điện thoại phải đủ 10 số và bắt đầu bằng số 0
+            // Biểu thức chính quy ^0[0-9]{9}$ kiểm tra bắt đầu bằng số 0 và theo sau là 9 chữ số khác
+            if (!phone.matches("^0[0-9]{9}$")) {
+                edtPhone.setError("Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0");
+                edtPhone.requestFocus(); // Đưa con trỏ chuột tập trung vào ô lỗi này
+                return;
+            }
+
+            // 3. PHẦN THÊM MỚI: Ràng buộc Email phải đúng định dạng chuẩn (vd: abc@domain.com)
+            // Sử dụng mẫu kiểm tra email tích hợp sẵn vô cùng chính xác của Android hệ thống
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                edtEmail.setError("Địa chỉ Email không hợp lệ (Ví dụ: sv@gmail.com)");
+                edtEmail.requestFocus(); // Đưa con trỏ chuột tập trung vào ô lỗi này
+                return;
+            }
+
+            // Chuyển đổi ảnh đang hiển thị trên ImageView thành mảng byte[] để lưu SQLite
             byte[] imageByteArray = imageViewToByteArray(imgProfile);
 
-            // 7. Thêm SQLite (Lưu ý: Bạn cần vào class DatabaseHelper thêm tham số byte[] vào hàm addStudent nhé)
+            // Thêm SQLite
             boolean result = databaseHelper.addStudent(name, code, phone, email, imageByteArray);
 
-            if(result) {
+            if (result) {
                 Toast.makeText(this, "Thêm sinh viên thành công", Toast.LENGTH_SHORT).show();
 
                 // Clear form
@@ -117,7 +127,7 @@ public class AddStudentActivity extends AppCompatActivity {
     }
 
     /**
-     * Hàm phụ trợ chuyển đổi ảnh từ ImageView thành mảng byte[] để ghi vào cơ sở dữ liệu (kiểu BLOB)
+     * Hàm phụ trợ chuyển đổi ảnh từ ImageView thành mảng byte[]
      */
     private byte[] imageViewToByteArray(ImageView imageView) {
         try {
@@ -125,12 +135,11 @@ public class AddStudentActivity extends AppCompatActivity {
             Bitmap bitmap = drawable.getBitmap();
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            // Nén ảnh sang định dạng PNG để giữ nguyên chất lượng
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             return stream.toByteArray();
         } catch (Exception e) {
             e.printStackTrace();
-            return null; // Trả về null nếu có lỗi xảy ra hoặc chưa chọn ảnh
+            return null;
         }
     }
 }

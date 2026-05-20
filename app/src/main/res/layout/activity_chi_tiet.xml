@@ -1,115 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:background="#F8F9FA"
-    android:gravity="center_horizontal">
+    android:background="@drawable/ic_login"> <View
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6FFFFFF" />
 
-    <!-- Tiêu đề màn hình -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="THÔNG TIN CHI TIẾT"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp"/>
-
-    <!-- Ảnh đại diện sinh viên (Phóng to hơn ở danh sách) -->
-
-    <!-- Khung chứa thông tin chi tiết -->
-    <ImageView
-        android:id="@+id/imgProfile"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_marginBottom="30dp"
-        android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:drawable/dialog_holo_light_frame"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Tên Sinh Viên -->
-        <TextView
-            android:id="@+id/txtChiTietTen"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Họ và tên: Nguyễn Văn A"
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
 
-        <!-- Mã Số Sinh Viên -->
-        <TextView
-            android:id="@+id/txtChiTietMSSV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="MSSV: 12345678"
-            android:textSize="16sp"
-            android:textColor="#444444"
-            android:layout_marginBottom="12dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="32dp">
 
-        <!-- Số Điện Thoại -->
-        <TextView
-            android:id="@+id/txtChiTietSDT"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Số điện thoại: 0901234567"
-            android:textSize="16sp"
-            android:textColor="#444444"
-            android:layout_marginBottom="12dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HỒ SƠ"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#8B5E3C"
+                    android:letterSpacing="0.1"/>
 
-        <!-- Email -->
-        <TextView
-            android:id="@+id/txtChiTietEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Email: sv@gmail.com"
-            android:textSize="16sp"
-            android:textColor="#444444"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="THÔNG TIN CHI TIẾT"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
 
-    </LinearLayout>
+            <androidx.cardview.widget.CardView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                app:cardCornerRadius="65dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="32dp">
 
-    <!-- THÊM THANH CHỨA 2 NÚT XÓA VÀ SỬA Ở ĐÂY -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp"
-        android:weightSum="2">
+                <ImageView
+                    android:id="@+id/imgProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_launcher"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
 
-        <!-- Nút Xóa (Màu đỏ) -->
-        <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:text="Xóa"
-            android:textSize="16sp"
-            android:backgroundTint="#D32F2F"
-            android:textColor="#FFFFFF"
-            android:layout_marginRight="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_login_card" android:padding="24dp"
+                android:layout_marginBottom="32dp">
 
-        <!-- Nút Sửa (Màu xanh lá) -->
-        <Button
-            android:id="@+id/btnEdit"
-            android:layout_width="0dp"
-            android:layout_height="55dp"
-            android:layout_weight="1"
-            android:text="Sửa"
-            android:textSize="16sp"
-            android:backgroundTint="#388E3C"
-            android:textColor="#FFFFFF"
-            android:layout_marginLeft="8dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtChiTietTen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nguyễn Văn A"
+                    android:textSize="18sp"
+                    android:textColor="#333333"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="2dp"/>
 
-    </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E6D5C3"
+                    android:layout_marginBottom="16dp"/>
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mã số sinh viên (MSSV)"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtChiTietMSSV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="12345678"
+                    android:textSize="16sp"
+                    android:textColor="#8B5E3C"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="2dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E6D5C3"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Số điện thoại"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtChiTietSDT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0901234567"
+                    android:textSize="16sp"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="2dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E6D5C3"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ Email"
+                    android:textSize="12sp"
+                    android:textColor="#A0A0A0"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/txtChiTietEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="sv@gmail.com"
+                    android:textSize="16sp"
+                    android:textColor="#555555"
+                    android:layout_marginTop="2dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginBottom="20dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="8dp"
+                    android:text="🗑  Xóa hồ sơ"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_logout_button" /> <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEdit"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="8dp"
+                android:text="✏️  Sửa thông tin"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_button_login" /> </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

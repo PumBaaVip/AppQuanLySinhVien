@@ -1,100 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@drawable/ic_login">
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:background="#E6FFFFFF" />
 
-        <TextView
-            android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="THÊM SINH VIÊN"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_gravity="center"
-            android:layout_marginBottom="25dp"/>
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <!-- KHU VỰC ẢNH ĐẠI DIỆN (Người dùng click thẳng vào ảnh để chọn file) -->
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher"
-            android:scaleType="centerCrop"
-            android:background="@android:drawable/dialog_holo_light_frame"
-            android:padding="5dp"
-            android:layout_marginBottom="25dp"
-            android:clickable="true"
-            android:focusable="true"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp">
 
-        <!-- TÊN (Nhấn Enter nhảy xuống ô MSSV) -->
-        <EditText
-            android:id="@+id/edtName"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Nhập tên sinh viên"
-            android:inputType="textPersonName"
-            android:maxLines="1"
-            android:imeOptions="actionNext"
-            android:padding="15dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="15dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="THÔNG TIN"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#8B5E3C"
+                    android:letterSpacing="0.1"/>
 
-        <!-- MSSV (Nhấn Enter nhảy xuống ô Số điện thoại) -->
-        <EditText
-            android:id="@+id/edtCode"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Nhập MSSV"
-            android:inputType="text"
-            android:maxLines="1"
-            android:imeOptions="actionNext"
-            android:padding="15dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="15dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="THÊM SINH VIÊN"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
 
-        <!-- SDT (Nhấn Enter nhảy xuống ô Email) -->
-        <EditText
-            android:id="@+id/edtPhone"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Nhập số điện thoại"
-            android:inputType="phone"
-            android:maxLines="1"
-            android:imeOptions="actionNext"
-            android:padding="15dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="15dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginBottom="32dp">
 
-        <!-- EMAIL (Ô cuối cùng: Nhấn Enter sẽ ẩn bàn phím) -->
-        <EditText
-            android:id="@+id/edtEmail"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:hint="Nhập email"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:imeOptions="actionDone"
-            android:padding="15dp"
-            android:background="@android:drawable/edit_text"
-            android:layout_marginBottom="25dp"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-        <!-- BUTTON -->
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:text="Lưu sinh viên"
-            android:textSize="18sp"/>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        app:cardCornerRadius="55dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
 
-    </LinearLayout>
+                        <ImageView
+                            android:id="@+id/imgProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/ic_launcher"
+                            android:scaleType="centerCrop"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </androidx.cardview.widget.CardView>
+                </FrameLayout>
 
-</ScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chạm để chọn ảnh"
+                    android:textSize="13sp"
+                    android:textColor="#8B5E3C"
+                    android:textStyle="italic"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Nhập tên sinh viên"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:textColor="#333333"
+                android:textColorHint="#A0A0A0"
+                android:background="@drawable/bg_menu_item"
+                android:layout_marginBottom="16dp"
+                android:nextFocusDown="@id/edtCode"/>
+
+            <EditText
+                android:id="@+id/edtCode"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Nhập mã số sinh viên (MSSV)"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:textColor="#333333"
+                android:textColorHint="#A0A0A0"
+                android:background="@drawable/bg_menu_item"
+                android:layout_marginBottom="16dp"
+                android:nextFocusDown="@id/edtPhone"/>
+
+            <EditText
+                android:id="@+id/edtPhone"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Nhập số điện thoại"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:textColor="#333333"
+                android:textColorHint="#A0A0A0"
+                android:background="@drawable/bg_menu_item"
+                android:layout_marginBottom="16dp"
+                android:nextFocusDown="@id/edtEmail"/>
+
+            <EditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:hint="Nhập địa chỉ email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:textColor="#333333"
+                android:textColorHint="#A0A0A0"
+                android:background="@drawable/bg_menu_item"
+                android:layout_marginBottom="32dp"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="20dp"
+                android:text="Lưu thông tin sinh viên"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_button_login"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
