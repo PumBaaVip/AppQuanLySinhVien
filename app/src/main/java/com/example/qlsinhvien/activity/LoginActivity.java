@@ -1,12 +1,13 @@
 package com.example.qlsinhvien.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences; // THÊM THƯ VIỆN
+import android.content.SharedPreferences;
+import android.database.Cursor; // BẮT BUỘC THÊM THƯ VIỆN NÀY ĐỂ ĐỌC DỮ LIỆU TỪ SQLITE
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.CheckBox; // THÊM THƯ VIỆN
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,10 +22,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtUsername, edtPassword;
     private Button btnLogin;
     private TextView txtRegister;
-    private CheckBox cbRemember; // THÊM KHAI BÁO CHECKBOX
+    private CheckBox cbRemember;
     private DatabaseHelper databaseHelper;
 
-    // Đặt tên file cấu hình lưu trữ bộ nhớ tạm
+    // Đặt tên file cấu hình lưu trữ bộ nhớ tạm (Dùng chung cho Ghi nhớ mật khẩu & Phân quyền)
     private static final String PREFS_NAME = "loginPrefs";
     private SharedPreferences sharedPreferences;
 
@@ -49,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtRegister = findViewById(R.id.txtRegister);
-        cbRemember = findViewById(R.id.cbRemember); // ÁNH XẠ CHECKBOX
+        cbRemember = findViewById(R.id.cbRemember);
     }
 
     private void setupListeners() {
@@ -86,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN);
     }
 
-    // TÍNH NĂNG MỚI: Tự động tải lại thông tin đăng nhập cũ (nếu có)
+    // Tự động tải lại thông tin đăng nhập cũ (nếu có)
     private void loadSavedLoginInfo() {
         boolean isRemembered = sharedPreferences.getBoolean("remember", false);
         if (isRemembered) {
@@ -99,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    // ĐÃ NÂNG CẤP: Xử lý Đăng nhập + Ghi nhớ mật khẩu + Lưu phân quyền Session
     private void performLogin() {
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
@@ -108,29 +110,46 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        if (databaseHelper.loginUser(username, password)) {
+        // THAY ĐỔI: Gọi getUserSession thay vì loginUser để lấy quyền hạn
+        Cursor cursor = databaseHelper.getUserSession(username, password);
+
+        if (cursor != null && cursor.moveToFirst()) {
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
 
-            // TÍNH NĂNG MỚI: Xử lý lưu hoặc xóa trạng thái bộ nhớ đệm
+            // 1. Trích xuất thông tin quyền hạn từ Cursor
+            int role = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.USER_ROLE));
+            int studentId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.LINKED_STUDENT_ID));
+
+            // 2. Xử lý ghi nhớ phiên làm việc vào SharedPreferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            // Lưu quyền (Bắt buộc lưu để phân quyền ở MainActivity)
+            editor.putInt("USER_ROLE", role);
+            editor.putInt("USER_STUDENT_ID", studentId);
+
+            // Xử lý tính năng "Ghi nhớ mật khẩu"
             if (cbRemember.isChecked()) {
-                // Nếu tích chọn "Ghi nhớ", lưu lại tên tài khoản, mật khẩu
                 editor.putString("username", username);
                 editor.putString("password", password);
                 editor.putBoolean("remember", true);
             } else {
-                // Nếu bỏ tích, xóa sạch dữ liệu đăng nhập cũ đã lưu trong máy
-                editor.clear();
+                // Chỉ xóa tài khoản/mật khẩu, không dùng editor.clear() để tránh xóa mất quyền vừa lưu ở trên
+                editor.remove("username");
+                editor.remove("password");
+                editor.putBoolean("remember", false);
             }
-            editor.apply(); // Chạy ngầm tiến trình ghi dữ liệu vào máy
+            editor.apply();
 
-            // CHUẨN: Xóa ngăn xếp Activity để người dùng không quay lại màn hình Login được
+            cursor.close(); // Đóng cursor để giải phóng bộ nhớ
+
+            // 3. Chuyển hướng màn hình và xóa ngăn xếp
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+            if (cursor != null) cursor.close();
         }
     }
 }

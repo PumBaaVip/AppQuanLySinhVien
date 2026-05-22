@@ -2,8 +2,10 @@ package com.example.qlsinhvien.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,44 +18,57 @@ import com.example.qlsinhvien.model.Student;
 public class ChiTietActivity extends AppCompatActivity {
     private TextView txtTen, txtMSSV, txtSDT, txtEmail;
     private ImageView imgProfile;
-    private Button btnEdit, btnDelete; // Thêm biến nút
+    private Button btnEdit, btnDelete;
     private DatabaseHelper db;
-    private int studentId; // Lưu lại ID để dùng cho Sửa/Xóa
+    private int studentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chi_tiet);
 
-        // 1. Ánh xạ
+        // 1. Ánh xạ View
         txtTen = findViewById(R.id.txtChiTietTen);
         txtMSSV = findViewById(R.id.txtChiTietMSSV);
         txtSDT = findViewById(R.id.txtChiTietSDT);
         txtEmail = findViewById(R.id.txtChiTietEmail);
         imgProfile = findViewById(R.id.imgProfile);
-        btnEdit = findViewById(R.id.btnEdit);     // Cần khai báo trong XML
-        btnDelete = findViewById(R.id.btnDelete); // Cần khai báo trong XML
+        btnEdit = findViewById(R.id.btnEdit);
+        btnDelete = findViewById(R.id.btnDelete);
 
         db = new DatabaseHelper(this);
 
-        // 2. NHẬN DỮ LIỆU
+        // 2. Nhận dữ liệu ID từ Activity trước gửi sang
         studentId = getIntent().getIntExtra("STUDENT_ID", -1);
 
         if (studentId != -1) {
             loadStudentData();
         } else {
-            Toast.makeText(this, "Lỗi ID sinh viên!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi: Không tìm thấy mã sinh viên!", Toast.LENGTH_SHORT).show();
             finish();
         }
 
-        // 3. XỬ LÝ SỰ KIỆN NÚT
-        btnDelete.setOnClickListener(v -> showDeleteDialog());
+        // 3. Cấu hình phân quyền (Ẩn nút nếu là Sinh viên)
+        applyPermissions();
 
+        // 4. Xử lý sự kiện
+        btnDelete.setOnClickListener(v -> showDeleteDialog());
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(ChiTietActivity.this, EditStudentActivity.class);
             intent.putExtra("STUDENT_ID", studentId);
             startActivity(intent);
         });
+    }
+
+    private void applyPermissions() {
+        SharedPreferences prefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        int role = prefs.getInt("USER_ROLE", 0); // 0 là Admin, 1 là Sinh viên
+
+        if (role == 1) {
+            // Ẩn nút Sửa và Xóa đối với sinh viên
+            btnEdit.setVisibility(View.GONE);
+            btnDelete.setVisibility(View.GONE);
+        }
     }
 
     private void loadStudentData() {
@@ -67,21 +82,24 @@ public class ChiTietActivity extends AppCompatActivity {
             if (student.getImage() != null && student.getImage().length > 0) {
                 imgProfile.setImageBitmap(BitmapFactory.decodeByteArray(student.getImage(), 0, student.getImage().length));
             }
-        } else {
-            Toast.makeText(this, "Không tìm thấy dữ liệu!", Toast.LENGTH_SHORT).show();
-            finish();
         }
     }
 
-    // Hàm hiển thị hộp thoại xác nhận xóa
     private void showDeleteDialog() {
+        // Kiểm tra an toàn trước khi xóa
+        SharedPreferences prefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        if (prefs.getInt("USER_ROLE", 0) == 1) {
+            Toast.makeText(this, "Bạn không có quyền thực hiện chức năng này!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         new AlertDialog.Builder(this)
                 .setTitle("Xác nhận xóa")
                 .setMessage("Bạn có chắc chắn muốn xóa sinh viên này không?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     if (db.deleteStudent(studentId)) {
                         Toast.makeText(this, "Đã xóa thành công", Toast.LENGTH_SHORT).show();
-                        finish(); // Quay về màn hình danh sách
+                        finish();
                     } else {
                         Toast.makeText(this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
                     }
@@ -90,7 +108,6 @@ public class ChiTietActivity extends AppCompatActivity {
                 .show();
     }
 
-    // Cập nhật lại dữ liệu khi quay lại từ màn hình Sửa
     @Override
     protected void onResume() {
         super.onResume();
